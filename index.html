@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no"
+    />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#05060a" />
+    <title>COSMIC FORGE</title>
+    <style>
+      :root {
+        --bg: #05060a;
+        --ink: #e8ecf4;
+        --dim: #7c8698;
+        --line: rgba(255, 255, 255, 0.08);
+        --accent: #58c8ff;
+        --hot: #ff7a3c;
+        --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+        --font-ui: system-ui, -apple-system, "Segoe UI", Inter, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body,
+      #root {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-ui);
+        overscroll-behavior: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      canvas {
+        display: block;
+        touch-action: none;
+      }
+      #boot {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        gap: 18px;
+        background: var(--bg);
+        z-index: 50;
+        transition: opacity 600ms ease-out;
+      }
+      #boot.done {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #boot .mark {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        letter-spacing: 0.42em;
+        text-transform: uppercase;
+        color: var(--dim);
+      }
+      #boot .bar {
+        width: 180px;
+        height: 1px;
+        background: var(--line);
+        overflow: hidden;
+      }
+      #boot .bar i {
+        display: block;
+        height: 100%;
+        width: 40%;
+        background: var(--accent);
+        animation: sweep 1.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+      }
+      @keyframes sweep {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(350%);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #boot .bar i {
+          animation-duration: 3s;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <div id="boot">
+      <div class="mark">Cosmic Forge</div>
+      <div class="bar"><i></i></div>
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
