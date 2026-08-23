@@ -45,7 +45,7 @@ export function Reticle({ planetRadius = 1, altitude = 1.006 }) {
   const pulse = useRef(1)
 
   const weapon = weaponFor(activeWeapon)
-  const ringRadius = Math.max(weapon.radius * planetRadius * 2.2, planetRadius * 0.012)
+  const ringRadius = Math.max(weapon.radius * planetRadius * 0.95, planetRadius * 0.012)
 
   // Unit-scale geometry; the group scale carries the real radius so the pulse
   // is a single transform write per frame and nothing is rebuilt on resize.
