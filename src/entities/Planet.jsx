@@ -28,6 +28,8 @@ export const Planet = forwardRef(function Planet(
   const groupRef = useRef()
   const surfaceRef = useRef()
   const spinRef = useRef()
+  const atmoRef = useRef()
+  const cloudRef = useRef()
 
   // Damage field is the shared simulation substrate — one per planet, sized by tier.
   const damage = useMemo(() => new DamageField(budget.damageRes), [budget.damageRes])
@@ -146,6 +148,11 @@ export const Planet = forwardRef(function Planet(
       spinRef.current.rotation.y += (delta * Math.PI * 2) / rotationPeriod
     }
 
+    // Fragment stage has no modelMatrix — feed each mesh's world matrix in.
+    if (surfaceRef.current) surface.uniforms.uModel.value.copy(surfaceRef.current.matrixWorld)
+    if (atmoRef.current) atmo.uniforms.uModel.value.copy(atmoRef.current.matrixWorld)
+    if (cloudRef.current && clouds) clouds.uniforms.uModel.value.copy(cloudRef.current.matrixWorld)
+
     surface.uniforms.uTime.value = t
     atmo.uniforms.uTime.value = t
     if (clouds) {
@@ -175,10 +182,10 @@ export const Planet = forwardRef(function Planet(
       <group rotation={[0, 0, axialTilt]}>
         <group ref={spinRef}>
           <mesh ref={surfaceRef} geometry={geometry} material={surface.material} name={`planet:${id}`} />
-          {clouds && <mesh geometry={cloudGeometry} material={clouds.material} renderOrder={2} />}
+          {clouds && <mesh ref={cloudRef} geometry={cloudGeometry} material={clouds.material} renderOrder={2} />}
         </group>
       </group>
-      <mesh geometry={atmoGeometry} material={atmo.material} renderOrder={3} />
+      <mesh ref={atmoRef} geometry={atmoGeometry} material={atmo.material} renderOrder={3} />
     </group>
   )
 })
