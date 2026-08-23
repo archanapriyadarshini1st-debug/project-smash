@@ -27,7 +27,7 @@ const _localDir = new THREE.Vector3()
 const _prevLocal = new THREE.Vector3()
 const _ndc = new THREE.Vector2()
 
-export function WeaponSystem({ planetRef, debrisRef }) {
+export function WeaponSystem({ planetRef, debrisRef, envRef }) {
   const { camera, raycaster, gl, scene } = useThree()
 
   const activeWeapon = useStore((s) => s.activeWeapon)
@@ -145,6 +145,13 @@ export function WeaponSystem({ planetRef, debrisRef }) {
   // ---- impact ------------------------------------------------------------
   const applyImpact = useCallback((planet, w, localDir, scale = 1) => {
     const damage = planet.damage
+    // Secondary consequences: firestorms, plumes, tsunamis, shock rings, quakes.
+    const env = envRef?.current
+    if (env) {
+      const before = damage.sample(localDir)
+      const energy = (w.depth * w.radius * 40 + (w.blast || 0) * 6) * scale
+      env.impact(localDir, energy, { ocean: before.depth < 0.02 && planet.preset?.seaLevel > 0 })
+    }
     damage.stamp(localDir, w.radius * scale, {
       depth: w.depth * scale,
       heat: w.heat,
@@ -179,7 +186,7 @@ export function WeaponSystem({ planetRef, debrisRef }) {
         color: w.color,
       })
     }
-  }, [debrisRef, budget.debrisMax, shockwaves, state])
+  }, [debrisRef, envRef, budget.debrisMax, shockwaves, state])
 
   const fire = useCallback((planet, w, hit) => {
     if (w.kind === 'projectile') {
@@ -217,6 +224,7 @@ export function WeaponSystem({ planetRef, debrisRef }) {
     const planet = planetRef.current
     if (!planet || !planet.mesh) return
 
+    if (envRef?.current) envRef.current.update(delta)
     const w = weaponFor(activeWeapon)
     beam.uniforms.uTime.value += delta
     if (state.cooldown > 0) state.cooldown -= delta
@@ -307,6 +315,11 @@ export function WeaponSystem({ planetRef, debrisRef }) {
           debris.burst(cur, 1, { speed: w.debrisSpeed || 0.3, size: 0.006 + w.radius * 0.08, spread: 1.1 })
         }
 
+        state.envAcc = (state.envAcc || 0) + delta
+        if (state.envAcc > 0.25 && envRef?.current) {
+          state.envAcc = 0
+          envRef.current.impact(cur, w.depth * w.radius * 9, { ocean: false })
+        }
         if (w.disturb) planet.disturb(w.disturb * delta)
         if (w.lethality) state.population = planet.killPopulation(Math.min(0.02, w.lethality * delta * 6))
 
