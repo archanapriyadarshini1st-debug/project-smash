@@ -308,7 +308,7 @@ export function WeaponSystem({ planetRef, debrisRef }) {
         }
 
         if (w.disturb) planet.disturb(w.disturb * delta)
-        if (w.lethality) state.population = planet.killPopulation(w.lethality * delta * 60)
+        if (w.lethality) state.population = planet.killPopulation(Math.min(0.02, w.lethality * delta * 6))
 
         if (beamLightRef.current) {
           beamLightRef.current.visible = true
