@@ -25,6 +25,7 @@ uniform int uSteps;
 uniform int uLightSteps;
 uniform sampler2D uDamage;
 
+uniform mat4 uModel;   // three injects uModel into the vertex stage only
 varying vec3 vWorldPos;
 
 mat3 rotY(float a) {
@@ -69,7 +70,7 @@ float cloudDensity(vec3 p, float h) {
 }
 
 void main() {
-  vec3 centre = (modelMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+  vec3 centre = (uModel * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
   vec3 ro = cameraPosition - centre;
   vec3 rd = normalize(vWorldPos - cameraPosition);
 
