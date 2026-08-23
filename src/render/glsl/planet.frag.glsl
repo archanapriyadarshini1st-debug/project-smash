@@ -30,6 +30,7 @@ uniform float uIceLatitude;
 
 varying vec3 vLocalPos;
 varying vec3 vLocalNormal;
+uniform mat4 uModel;   // three injects uModel into the vertex stage only
 varying vec3 vWorldPos;
 varying vec2 vUv;
 varying float vElevation;
@@ -104,7 +105,7 @@ void main() {
   vec3 N = uType == 2 ? dir : reliefNormal(dir, amp);
   N = damageNormal(N, vUv, 26.0 * dmg.r);
   // Transform local -> world for lighting (uniform scale assumed).
-  vec3 Nw = normalize(mat3(modelMatrix) * N);
+  vec3 Nw = normalize(mat3(uModel) * N);
 
   vec3 V = normalize(cameraPosition - vWorldPos);
   vec3 L = normalize(uLightPos - vWorldPos);
@@ -176,7 +177,7 @@ void main() {
     vec3 up = abs(dir.y) < 0.99 ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0);
     vec3 t = normalize(cross(up, dir));
     vec3 b = cross(dir, t);
-    Nw = normalize(mat3(modelMatrix) * normalize(dir + t * w1 * 0.06 + b * w2 * 0.06));
+    Nw = normalize(mat3(uModel) * normalize(dir + t * w1 * 0.06 + b * w2 * 0.06));
     NdotL = dot(Nw, L);
   }
 
