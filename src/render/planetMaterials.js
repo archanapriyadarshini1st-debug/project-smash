@@ -15,6 +15,7 @@ export function createSurfaceMaterial({ preset, radius, damageTexture, budget })
   const uniforms = {
     uDamage: { value: damageTexture },
     uTime: { value: 0 },
+    uModel: { value: new THREE.Matrix4() },
     uRadius: { value: radius },
     uTerrainScale: { value: preset.terrainScale },
     uTerrainAmp: { value: preset.terrainAmp },
@@ -63,6 +64,7 @@ export function createAtmosphereMaterial({ preset, radius, budget }) {
     uMieColor: { value: a.mieColor.clone() },
     uMieStrength: { value: a.mieStrength },
     uTime: { value: 0 },
+    uModel: { value: new THREE.Matrix4() },
     uDisturbance: { value: 0 },
     uSteps: { value: budget.reliefSteps > 10 ? 24 : budget.reliefSteps > 5 ? 16 : 10 },
   }
@@ -90,6 +92,7 @@ export function createCloudMaterial({ preset, radius, damageTexture, budget }) {
     uInner: { value: radius * cl.inner },
     uOuter: { value: radius * cl.outer },
     uTime: { value: 0 },
+    uModel: { value: new THREE.Matrix4() },
     uCoverage: { value: cl.coverage },
     uDensity: { value: cl.density },
     uRotation: { value: 0 },
