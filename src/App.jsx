@@ -7,6 +7,8 @@ import { Planet } from './entities/Planet.jsx'
 import { DebrisField } from './entities/DebrisField.jsx'
 import { Starfield } from './render/Starfield.jsx'
 import { WeaponSystem } from './weapons/WeaponSystem.jsx'
+import { EnvironmentLayer, EnvironmentTelemetry } from './render/EnvironmentLayer.jsx'
+import { EnvironmentSim } from './sim/environment.js'
 import { Reticle } from './ui/Reticle.jsx'
 import { HUD } from './ui/HUD.jsx'
 import { TERRA } from './entities/planetPresets.js'
@@ -16,6 +18,8 @@ function Scene() {
   const lightRef = useRef()
   const planetRef = useRef()
   const debrisRef = useRef()
+  const envRef = useRef(null)
+  if (!envRef.current) envRef.current = new EnvironmentSim({ planetRadius: TERRA.radius })
   const spinRef = useRef(null)
   const [, force] = useState(0)
   const budget = useStore((s) => s.budget)
@@ -51,7 +55,9 @@ function Scene() {
       />
 
       <DebrisField ref={debrisRef} planetRadius={TERRA.radius} parentRef={spinRef} />
-      <WeaponSystem planetRef={planetRef} debrisRef={debrisRef} />
+      <WeaponSystem planetRef={planetRef} debrisRef={debrisRef} envRef={envRef} />
+      <EnvironmentLayer envRef={envRef} planetRadius={TERRA.radius} parentRef={spinRef} />
+      <EnvironmentTelemetry envRef={envRef} />
       <Reticle planetRadius={TERRA.radius} />
 
       <OrbitControls
