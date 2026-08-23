@@ -24,10 +24,11 @@ uniform float uTime;
 uniform float uDisturbance;  // 0..1 rises after impacts: dust loading, haze
 uniform int uSteps;
 
+uniform mat4 uModel;   // three injects uModel into the vertex stage only
 varying vec3 vWorldPos;
 
 void main() {
-  vec3 planetCentre = (modelMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+  vec3 planetCentre = (uModel * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
   vec3 ro = cameraPosition - planetCentre;
   vec3 rd = normalize(vWorldPos - cameraPosition);
 
